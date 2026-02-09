@@ -129,7 +129,7 @@ active { color: var(--accent); }
         </div>
     </div>
 
-    <nav class="nav">
+   <nav class="nav">
         <div class="nav-item active" id="n-base" onclick="nav('base')">
             <i class="fas fa-database"></i><span>База</span>
         </div>
@@ -137,12 +137,12 @@ active { color: var(--accent); }
             <i class="fas fa-calculator"></i><span>Корм</span>
         </div>
     </nav>
-</div>
-
-<div id="viewer">
-    <button class="btn-close" onclick="closeDoc()"><i class="fas fa-chevron-left"></i> &nbsp; НАЗАД</button>
+</div> <div id="viewer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--tg-bg); z-index: 5000; padding: 25px; box-sizing: border-box; overflow-y: auto;">
+    <button class="btn-close" onclick="closeDoc()" style="color: var(--accent); font-weight: bold; margin-bottom: 20px; border: none; background: none; font-size: 16px; display: flex; align-items: center;">
+        <i class="fas fa-chevron-left"></i> &nbsp; НАЗАД
+    </button>
     <h2 id="v-title" style="color: var(--accent); margin-top: 0;"></h2>
-<div id="v-text" class="content-text"></div>
+    <div id="v-text" class="content-text" style="line-height: 1.6; font-size: 16px; color: #e0e0e0;"></div>
 </div>
 
 <script>
@@ -152,10 +152,11 @@ active { color: var(--accent); }
     // Запуск приложения
     window.onload = () => {
         setTimeout(() => {
-            document.getElementById('splash-screen').style.opacity = '0';
+            const splash = document.getElementById('splash-screen');
+            if(splash) splash.style.opacity = '0';
             document.getElementById('main-app').style.opacity = '1';
             document.body.style.overflow = 'auto';
-            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 600);
+            setTimeout(() => { if(splash) splash.style.display = 'none'; }, 600);
         }, 2800);
     };
 
@@ -175,13 +176,17 @@ active { color: var(--accent); }
         document.getElementById('v-text').innerHTML = text;
         document.getElementById('viewer').style.display = 'block';
     }
-    function closeDoc() { document.getElementById('viewer').style.display = 'none'; }
+    
+    function closeDoc() { 
+        document.getElementById('viewer').style.display = 'none'; 
+    }
 
     // Калькулятор
     function addRow() {
         tg.HapticFeedback.impactOccurred('light');
         const row = document.createElement('div');
         row.className = 'dog-row';
+        // ИСПРАВЛЕНО: Добавлены обратные кавычки `` для HTML-строки
         row.innerHTML = <span>Вес собаки (кг):</span><input type="number" class="w-val" placeholder="0" oninput="runCalc()">;
         document.getElementById('dog-inputs').appendChild(row);
     }
