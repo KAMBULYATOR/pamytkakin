@@ -12,7 +12,7 @@
             --accent: #5dbb63;
             --card-bg: #1a211b;
             --nav-bg: #161b17;
-            --text-main: #ffffff; /* Чисто белый для контраста */
+            --text-main: #ffffff;
         }
 
         body {
@@ -21,6 +21,7 @@
             color: var(--text-main);
             margin: 0; padding: 0;
             overflow-x: hidden;
+            -webkit-user-select: none;
         }
 
         /* ЗАСТАВКА */
@@ -36,8 +37,8 @@
             box-shadow: 0 0 30px rgba(93, 187, 99, 0.4);
         }
 
-        /* ОСНОВНОЙ КОНТЕНТ */
-        .app-content { opacity: 0; transition: opacity 0.5s ease; padding-bottom: 100px; }
+        /* КОНТЕНТ */
+        .app-content { opacity: 0; transition: opacity 0.5s ease; padding-bottom: 120px; }
         .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -45,7 +46,6 @@
         .header { border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 25px; }
         .header h1 { font-size: 22px; text-transform: uppercase; margin: 0; color: var(--accent); letter-spacing: 1px; }
 
-        /* СЕТКА КАРТОЧЕК */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .card {
             background: var(--card-bg); border-radius: 18px; padding: 25px 10px;
@@ -56,28 +56,51 @@
         .card i { font-size: 30px; color: var(--accent); margin-bottom: 12px; display: block; }
         .card span { font-size: 13px; font-weight: bold; text-transform: uppercase; color: #ffffff; }
 
+        /* НИЖНЯЯ КНОПКА НАЗАД */
+        .bottom-back-btn {
+            background: #252d26;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 15px;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
         /* КАЛЬКУЛЯТОР */
         .calc-box { background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .dog-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; color: #fff; }
+        .dog-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
         input { background: #2a332b; border: 1px solid var(--accent); color: white; padding: 12px; border-radius: 12px; width: 90px; text-align: center; font-size: 16px; }
-        .btn-add { background: var(--accent); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; margin-bottom: 20px; font-size: 14px; }
+        .btn-add { background: var(--accent); color: #000; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; margin-bottom: 20px; }
         .res-container { background: rgba(93, 187, 99, 0.15); border-radius: 15px; padding: 20px; text-align: center; border: 1px dashed var(--accent); }
 
         /* НАВИГАЦИЯ */
-        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); display: flex; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); display: flex; padding: 15px 0 25px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
         .nav-item { flex: 1; text-align: center; color: #666; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
         .nav-item i { font-size: 22px; margin-bottom: 4px; display: block; }
-        .nav-item span { font-size: 10px; font-weight: bold; text-transform: uppercase; }
 
-        /* ОКНО ПРОСМОТРА ТЕКСТА */
+        /* ПРОСМОТР ТЕКСТА */
         #viewer { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: #000000; z-index: 5000; padding: 25px; box-sizing: border-box; overflow-y: auto; 
         }
-        .btn-back { color: var(--accent); font-weight: bold; margin-bottom: 25px; border: none; background: none; font-size: 18px; display: flex; align-items: center; }
-        .v-content { color: #ffffff; line-height: 1.7; font-size: 17px; }
+        .v-content { color: #ffffff; line-height: 1.7; font-size: 17px; padding-bottom: 80px; }
         .v-content b { color: var(--accent); }
+        
+        .fixed-bottom-close {
+            position: fixed; bottom: 20px; left: 20px; right: 20px;
+            background: var(--accent); color: #000;
+            border: none; border-radius: 15px; padding: 18px;
+            font-weight: bold; font-size: 16px; text-align: center;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
@@ -107,22 +130,24 @@
     </div>
 
     <div id="p-submenu" class="page">
-        <div class="btn-back" onclick="toggleSubMenu(false)"><i class="fas fa-arrow-left"></i> &nbsp; НАЗАД</div>
         <div class="header"><h1>Направление</h1></div>
         <div class="grid">
-            <div class="card" onclick="openDoc('Конвой', '<b>Конвойная служба:</b> Охрана и конвоирование осужденных...')">
+            <div class="card" onclick="openDoc('Конвой', '<b>Конвойная служба:</b> Охрана и конвоирование...')">
                 <i class="fas fa-user-lock"></i><span>Конвой</span>
             </div>
-            <div class="card" onclick="openDoc('СИЗО', '<b>Следственный изолятор:</b> Обыскные мероприятия, досмотр...')">
+            <div class="card" onclick="openDoc('СИЗО', '<b>СИЗО:</b> Обыскные мероприятия...')">
                 <i class="fas fa-hotel"></i><span>СИЗО</span>
             </div>
-            <div class="card" onclick="openDoc('ИК', '<b>Исправительная колония:</b> Патрулирование, охрана объектов...')">
+            <div class="card" onclick="openDoc('ИК', '<b>ИК:</b> Патрулирование периметра...')">
                 <i class="fas fa-tower-observation"></i><span>ИК</span>
             </div>
-            <div class="card" onclick="openDoc('Питомник', '<b>Племенной питомник:</b> Уход, разведение, обучение щенков...')">
+            <div class="card" onclick="openDoc('Питомник', '<b>Питомник:</b> Разведение и уход...')">
                 <i class="fas fa-dog"></i><span>Питомник</span>
             </div>
         </div>
+        <button class="bottom-back-btn" onclick="toggleSubMenu(false)">
+            <i class="fas fa-arrow-left"></i> НАЗАД В МЕНЮ
+        </button>
     </div>
 
     <div id="p-calc" class="page">
@@ -137,7 +162,7 @@
             <button class="btn-add" onclick="addRow()">+ Добавить собаку</button>
             <div class="res-container">
                 <div style="font-size: 32px; font-weight: bold; color: var(--accent);" id="total-g">0 г</div>
-                <div id="total-kg" style="opacity: 0.8; font-size: 14px; color: #fff;">(0.0 кг)</div>
+                <div id="total-kg" style="opacity: 0.8; font-size: 14px;">(0.0 кг)</div>
             </div>
         </div>
     </div>
@@ -153,9 +178,13 @@
 </div>
 
 <div id="viewer">
-    <button class="btn-back" onclick="closeDoc()"><i class="fas fa-times"></i> &nbsp; ЗАКРЫТЬ</button>
-    <h2 id="v-title" style="color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px;"></h2>
+    <div id="v-title-box" class="header" style="margin-top: 20px;">
+        <h1 id="v-title" style="font-size: 24px;"></h1>
+    </div>
     <div id="v-text" class="v-content"></div>
+    <button class="fixed-bottom-close" onclick="closeDoc()">
+        <i class="fas fa-check"></i> ПРОЧИТАНО
+    </button>
 </div>
 
 <script>
@@ -192,7 +221,10 @@
         document.getElementById('viewer').style.display = 'block';
     }
 
-    function closeDoc() { document.getElementById('viewer').style.display = 'none'; }
+    function closeDoc() { 
+        tg.HapticFeedback.impactOccurred('light');
+        document.getElementById('viewer').style.display = 'none'; 
+    }
 
     function addRow() {
         tg.HapticFeedback.impactOccurred('light');
