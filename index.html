@@ -7,12 +7,13 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --accent: #5dbb63; --dark: #1a211b; }
+        :root { --accent: #5dbb63; --dark: #1a211b; --nav-bg: #111111; }
+        
         body {
-            font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0;
             background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('bg.jpg');
             background-size: 300px; background-attachment: fixed;
-            overflow-x: hidden;
+            overflow-x: hidden; color: #000;
         }
 
         /* ЗАСТАВКА */
@@ -22,45 +23,76 @@
             justify-content: center; align-items: center; z-index: 9999;
             transition: opacity 0.6s ease;
         }
-        .splash-img { width: 180px; height: 180px; border-radius: 20px; border: 2px solid var(--accent); }
+        .splash-img { width: 180px; height: 180px; border-radius: 25px; border: 2px solid var(--accent); box-shadow: 0 0 20px rgba(93, 187, 99, 0.3); }
 
+        /* ОСНОВНОЙ КОНТЕНТ */
         .app-content { opacity: 0; transition: opacity 0.5s ease; padding: 20px 20px 150px 20px; }
         .page { display: none; animation: fadeIn 0.3s ease; }
         .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .header-box { background: var(--dark); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 5px solid var(--accent); color: white; }
-        .header-box h1 { margin: 0; font-size: 20px; text-transform: uppercase; }
+        /* ТЕМНЫЕ ПЛАШКИ ДЛЯ ТЕКСТА */
+        .header-box { 
+            background: var(--dark); padding: 15px; border-radius: 15px; 
+            margin-bottom: 20px; border-left: 5px solid var(--accent); 
+            color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .header-box h1 { margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* СЕТКА КНОПОК */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card { background: var(--dark); border-radius: 20px; padding: 25px 10px; text-align: center; color: white; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .card i { font-size: 30px; color: var(--accent); margin-bottom: 10px; display: block; }
-        .card span { font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .card { 
+            background: var(--dark); border-radius: 20px; padding: 25px 10px; 
+            text-align: center; color: white; border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s;
+        }
+        .card:active { transform: scale(0.96); opacity: 0.8; }
+        .card i { font-size: 32px; color: var(--accent); margin-bottom: 12px; display: block; }
+        .card span { font-size: 12px; font-weight: bold; text-transform: uppercase; display: block; }
 
         /* КАЛЬКУЛЯТОР */
         .calc-box { background: var(--dark); border-radius: 20px; padding: 20px; color: white; margin-top: 10px; }
-        input { background: #2a332b; border: 1px solid var(--accent); color: white; padding: 10px; border-radius: 10px; width: 70px; text-align: center; }
+        .dog-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        input { background: #2a332b; border: 1px solid var(--accent); color: white; padding: 12px; border-radius: 12px; width: 80px; text-align: center; font-size: 16px; }
+        .btn-add { width: 100%; padding: 15px; background: none; border: 1px dashed var(--accent); color: var(--accent); border-radius: 12px; font-weight: bold; margin-bottom: 20px; }
 
-        /* ОКНО ПРОСМОТРА */
-        #viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; padding: 30px; box-sizing: border-box; overflow-y: auto; }
-        .btn-close { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--dark); color: var(--accent); padding: 18px; border: none; border-radius: 15px; font-weight: bold; font-size: 16px; }
+        /* ВСПЛЫВАЮЩЕЕ ОКНО (ЧТЕНИЕ) */
+        #viewer { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #ffffff; z-index: 9999; padding: 30px; box-sizing: border-box; overflow-y: auto; 
+        }
+        #v-body { font-size: 18px; line-height: 1.7; color: #1a211b; padding-bottom: 100px; }
+        #v-body b { color: #2d5a30; }
+        .btn-close { 
+            position: fixed; bottom: 30px; left: 20px; right: 20px; 
+            background: var(--dark); color: var(--accent); padding: 20px; 
+            border: none; border-radius: 15px; font-weight: bold; font-size: 16px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
 
-        /* НАВИГАЦИЯ */
-        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #111; display: flex; padding: 15px 0 35px; border-top: 1px solid #333; z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; color: #555; font-size: 12px; }
+        /* НИЖНЯЯ НАВИГАЦИЯ */
+        .nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--nav-bg); display: flex; padding: 15px 0 35px; 
+            border-top: 1px solid #333; z-index: 1000; 
+        }
+        .nav-item { flex: 1; text-align: center; color: #555; transition: 0.3s; }
         .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item i { font-size: 22px; display: block; margin-bottom: 5px; }
+        .nav-item span { font-size: 11px; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <div id="splash-screen">
     <img src="9958AA18-BB0B-47D8-855F-E1213A900E7E.PNG" class="splash-img">
+    <div style="margin-top:20px; color:var(--accent); font-weight:bold; letter-spacing:2px;">K9 UNIT</div>
 </div>
 
 <div class="app-content" id="main-app">
+    
     <div id="p-base" class="page active">
-        <div class="header-box"><h1>Справочник K9</h1></div>
+        <div class="header-box"><h1>Справочник</h1></div>
         <div class="grid">
             <div class="card" onclick="toggleSub(true)"><i class="fas fa-user-shield"></i><span>Обязанности</span></div>
             <div class="card" onclick="loadContent('fz', 'Закон')"><i class="fas fa-gavel"></i><span>Применение ФЗ</span></div>
@@ -77,35 +109,39 @@
             <div class="card" onclick="loadContent('ik', 'ИК')"><i class="fas fa-shield-halved"></i><span>ИК</span></div>
             <div class="card" onclick="loadContent('prazvod', 'Питомник')"><i class="fas fa-dog"></i><span>Питомник</span></div>
         </div>
-        <button onclick="toggleSub(false)" style="width:100%; margin-top:20px; padding:15px; background:var(--dark); color:white; border-radius:12px; border:none; font-weight:bold;">← НАЗАД</button>
+        <button onclick="toggleSub(false)" style="width:100%; margin-top:25px; padding:18px; background:var(--dark); color:white; border-radius:15px; border:none; font-weight:bold; font-size:14px;">← НАЗАД В МЕНЮ</button>
     </div>
 
     <div id="p-calc" class="page">
         <div class="header-box"><h1>Расчет корма</h1></div>
         <div class="calc-box">
             <div id="dog-inputs">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <div class="dog-row">
                     <span>Вес собаки (кг):</span>
                     <input type="number" class="w-val" placeholder="0" oninput="runCalc()">
                 </div>
             </div>
-            <button onclick="addRow()" style="width:100%; padding:12px; background:none; border:1px dashed var(--accent); color:var(--accent); border-radius:10px; margin-bottom:15px;">+ Добавить собаку</button>
-            <div style="text-align:center; border-top:1px solid #444; padding-top:15px;">
-                <div id="total-g" style="font-size:28px; font-weight:bold; color:var(--accent);">0 г</div>
-                <div id="total-kg" style="font-size:14px; opacity:0.6;">(0.0 кг)</div>
+            <button class="btn-add" onclick="addRow()">+ ДОБАВИТЬ СОБАКУ</button>
+            <div style="text-align:center; border-top:1px solid #444; padding-top:20px;">
+                <div id="total-g" style="font-size:32px; font-weight:bold; color:var(--accent);">0 г</div>
+                <div id="total-kg" style="font-size:14px; opacity:0.6; color:#fff;">(0.0 кг)</div>
             </div>
         </div>
     </div>
 
     <nav class="nav">
-        <div class="nav-item active" id="n-base" onclick="nav('base')"><i class="fas fa-database"></i>База</div>
-        <div class="nav-item" id="n-calc" onclick="nav('calc')"><i class="fas fa-calculator"></i>Корм</div>
+        <div class="nav-item active" id="n-base" onclick="nav('base')">
+            <i class="fas fa-database"></i><span>База</span>
+        </div>
+        <div class="nav-item" id="n-calc" onclick="nav('calc')">
+            <i class="fas fa-calculator"></i><span>Корм</span>
+        </div>
     </nav>
 </div>
 
 <div id="viewer">
-    <h2 id="v-title" style="color:var(--dark); border-bottom: 2px solid var(--accent); padding-bottom:10px;"></h2>
-    <div id="v-body" style="font-size: 17px; line-height: 1.6; color: #333; padding-bottom: 100px;"></div>
+    <h2 id="v-title" style="color:var(--dark); border-bottom: 3px solid var(--accent); padding-bottom:10px; text-transform: uppercase;"></h2>
+    <div id="v-body"></div>
     <button class="btn-close" onclick="closeDoc()">ЗАКРЫТЬ</button>
 </div>
 
@@ -113,15 +149,18 @@
     let tg = window.Telegram.WebApp;
     tg.expand();
 
+    // Плавное выключение заставки
     window.onload = () => {
         setTimeout(() => {
             document.getElementById('splash-screen').style.opacity = '0';
             document.getElementById('main-app').style.opacity = '1';
             setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 600);
-        }, 2000);
+        }, 2500);
     };
 
+    // Переключение вкладок (База / Корм)
     function nav(tab) {
+        tg.HapticFeedback.impactOccurred('light');
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById('p-' + tab).classList.add('active');
@@ -129,27 +168,39 @@
         if(tab === 'base') toggleSub(false);
     }
 
+    // Показать/скрыть подменю Обязанности
     function toggleSub(show) {
+        tg.HapticFeedback.impactOccurred('medium');
         document.getElementById('p-base').classList.toggle('active', !show);
         document.getElementById('p-sub').classList.toggle('active', show);
     }
 
+    // Загрузка текстов из data.json
     async function loadContent(key, title) {
+        tg.HapticFeedback.impactOccurred('medium');
         document.getElementById('v-title').innerText = title;
-        document.getElementById('v-body').innerHTML = 'Загрузка...';
+        document.getElementById('v-body').innerHTML = '<p>Загрузка данных...</p>';
         document.getElementById('viewer').style.display = 'block';
+
         try {
             const response = await fetch('data.json');
             const data = await response.json();
-            document.getElementById('v-body').innerHTML = data[key] || "Текст не найден.";
-        } catch (e) { document.getElementById('v-body').innerHTML = "Ошибка: создайте файл data.json на GitHub."; }
+            document.getElementById('v-body').innerHTML = data[key] || "Текст еще не добавлен в data.json.";
+        } catch (e) {
+            document.getElementById('v-body').innerHTML = "<p style='color:red;'>Ошибка: файл data.json не найден или заполнен неверно.</p>";
+        }
     }
 
-    function closeDoc() { document.getElementById('viewer').style.display = 'none'; }
+    function closeDoc() { 
+        tg.HapticFeedback.impactOccurred('light');
+        document.getElementById('viewer').style.display = 'none'; 
+    }
 
+    // Калькулятор корма
     function addRow() {
+        tg.HapticFeedback.impactOccurred('light');
         const div = document.createElement('div');
-        div.style = "display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;";
+        div.className = "dog-row";
         div.innerHTML = `<span>Вес собаки (кг):</span><input type="number" class="w-val" placeholder="0" oninput="runCalc()">`;
         document.getElementById('dog-inputs').appendChild(div);
     }
@@ -158,7 +209,11 @@
         let total = 0;
         document.querySelectorAll('.w-val').forEach(i => {
             let v = parseFloat(i.value) || 0;
-            if(v > 0) total += (v < 25 ? 400 : (v <= 45 ? 600 : 1000));
+            if(v > 0) {
+                if (v < 25) total += 400;
+                else if (v <= 45) total += 600;
+                else total += 1000;
+            }
         });
         document.getElementById('total-g').innerText = total + ' г';
         document.getElementById('total-kg').innerText = '(' + (total/1000).toFixed(1) + ' кг)';
