@@ -3,239 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>K9 Tactical Guide</title>
+    <title>K9 Guide</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --tg-bg: #0f1410;
-            --accent: #5dbb63;
-            --card-bg: #1a211b;
-            --nav-bg: #161b17;
-            --text-main: #ffffff;
-        }
-
+        :root { --accent: #5dbb63; --dark: #1a211b; }
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: var(--tg-bg);
-            color: var(--text-main);
-            margin: 0; padding: 0;
-            overflow-x: hidden;
-            -webkit-user-select: none;
+            font-family: 'Segoe UI', sans-serif; margin: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)), url('bg.jpg');
+            background-size: 300px; background-attachment: fixed;
         }
-
-        /* ЗАСТАВКА */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 9999;
-            transition: opacity 0.6s ease;
-        }
-        .splash-img {
-            width: 200px; height: 200px; object-fit: cover;
-            border-radius: 20px; border: 2px solid var(--accent);
-        }
-
-        /* КОНТЕНТ */
-        .app-content { opacity: 0; transition: opacity 0.5s ease; padding-bottom: 120px; }
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
-        .page.active { display: block; }
+        .app-content { padding: 20px 20px 150px 20px; }
+        .header-box { background: var(--dark); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 5px solid var(--accent); color: white; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { background: var(--dark); border-radius: 20px; padding: 25px 10px; text-align: center; color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .card i { font-size: 30px; color: var(--accent); margin-bottom: 10px; display: block; }
+        .card span { font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .header { border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 25px; }
-        .header h1 { font-size: 22px; text-transform: uppercase; margin: 0; color: var(--accent); }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .card {
-            background: var(--card-bg); border-radius: 18px; padding: 25px 10px;
-            text-align: center; border: 1px solid rgba(93, 187, 99, 0.2);
-        }
-        .card i { font-size: 30px; color: var(--accent); margin-bottom: 12px; display: block; }
-        .card span { font-size: 13px; font-weight: bold; text-transform: uppercase; }
-
-        /* НАВИГАЦИЯ */
-        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); display: flex; padding: 15px 0 35px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; color: #666; }
+        #viewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; padding: 30px; box-sizing: border-box; overflow-y: auto; }
+        .btn-close { position: fixed; bottom: 30px; left: 20px; right: 20px; background: var(--dark); color: var(--accent); padding: 18px; border: none; border-radius: 15px; font-weight: bold; }
+        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #111; display: flex; padding: 15px 0 35px; border-top: 1px solid #333; }
+        .nav-item { flex: 1; text-align: center; color: #555; }
         .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 22px; margin-bottom: 4px; display: block; }
-
-        /* ОКНО ПРОСМОТРА ТЕКСТА (VIEWER) */
-        #viewer { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: #000000; z-index: 5000; padding: 30px 25px 120px 25px; box-sizing: border-box; overflow-y: auto; 
-        }
-        .v-content { color: #ffffff; line-height: 1.7; font-size: 18px; }
-        .v-content b { color: var(--accent); }
-        
-        /* НОВАЯ ФИКСИРОВАННАЯ КНОПКА ЗАКРЫТИЯ */
-        .fixed-close-container {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(transparent, #000 30%);
-            padding: 30px 20px 40px 20px;
-            box-sizing: border-box;
-            z-index: 5001;
-            display: none; /* Включается вместе с viewer */
-        }
-        .btn-close-final {
-            background: var(--accent); color: #000;
-            border: none; border-radius: 15px; padding: 18px;
-            font-weight: bold; font-size: 16px; width: 100%;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 0 20px rgba(93, 187, 99, 0.3);
-        }
-
-        .sub-back-btn {
-            background: #252d26; color: var(--accent);
-            border: 1px solid var(--accent); border-radius: 15px;
-            padding: 15px; width: 100%; font-weight: bold; margin-top: 20px;
-        }
     </style>
 </head>
 <body>
 
-<div id="splash-screen">
-    <img src="9958AA18-BB0B-47D8-855F-E1213A900E7E.png" class="splash-img">
-    <div style="margin-top: 20px; color: var(--accent); font-weight: bold;">ЗАГРУЗКА...</div>
-</div>
-
-<div class="app-content" id="main-app">
-    <div id="p-base" class="page active">
-        <div class="header"><h1>Справочник</h1></div>
+<div class="app-content">
+    <div id="p-main" class="page active">
+        <div class="header-box"><h1>Справочник K9</h1></div>
         <div class="grid">
-            <div class="card" onclick="toggleSubMenu(true)">
+            <div class="card" onclick="showSub()">
                 <i class="fas fa-user-shield"></i><span>Обязанности</span>
             </div>
-            <div class="card" onclick="openDoc('Применение ФЗ', '<b>Статья 28 ФЗ:</b> Сотрудник имеет право на применение силы...')">
+            <div class="card" onclick="loadContent('fz', 'Закон')">
                 <i class="fas fa-gavel"></i><span>Применение ФЗ</span>
             </div>
-            <div class="card" onclick="openDoc('СС и ОР', '<b>Спецсредства:</b> Применяются для отражения нападения...')">
-                <i class="fas fa-shield-dog"></i><span>СС и ОР</span>
-            </div>
-            <div class="card" onclick="openDoc('Дрессировка', '<b>Методики:</b> ОКД, ЗКС, Следовая работа...')">
-                <i class="fas fa-paw"></i><span>Дрессировка</span>
-            </div>
         </div>
     </div>
 
-    <div id="p-submenu" class="page">
-        <div class="header"><h1>Направление</h1></div>
+    <div id="p-sub" class="page">
+        <div class="header-box"><h1>Направления</h1></div>
         <div class="grid">
-            <div class="card" onclick="openDoc('Конвой', '<b>Конвойная служба:</b> Охрана и конвоирование осужденных...')">
-                <i class="fas fa-user-lock"></i><span>Конвой</span>
-            </div>
-            <div class="card" onclick="openDoc('СИЗО', '<b>СИЗО:</b> Обыскные мероприятия, досмотр...')">
-                <i class="fas fa-building"></i><span>СИЗО</span>
-            </div>
-            <div class="card" onclick="openDoc('ИК', '<b>ИК:</b> Патрулирование, охрана объектов...')">
-                <i class="fas fa-tower-observation"></i><span>ИК</span>
-            </div>
-            <div class="card" onclick="openDoc('Питомник', '<b>Питомник:</b> Разведение и уход за собаками...')">
-                <i class="fas fa-dog"></i><span>Питомник</span>
-            </div>
+            <div class="card" onclick="loadContent('konvoy', 'Конвой')"><i class="fas fa-truck"></i><span>Конвой</span></div>
+            <div class="card" onclick="loadContent('sizo', 'СИЗО')"><i class="fas fa-building"></i><span>СИЗО</span></div>
+            <div class="card" onclick="loadContent('ik', 'ИК')"><i class="fas fa-shield-halved"></i><span>ИК</span></div>
+            <div class="card" onclick="loadContent('prazvod', 'Питомник')"><i class="fas fa-paw"></i><span>Питомник</span></div>
         </div>
-        <button class="sub-back-btn" onclick="toggleSubMenu(false)">← НАЗАД В МЕНЮ</button>
+        <button onclick="showMain()" style="width:100%; margin-top:20px; padding:15px; background:var(--dark); color:white; border-radius:12px; border:none;">← НАЗАД</button>
     </div>
-
-    <div id="p-calc" class="page">
-        <div class="header"><h1>Корм</h1></div>
-        <div style="background: #1a211b; padding: 20px; border-radius: 20px;">
-            <div id="dog-inputs">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <span>Вес собаки (кг):</span>
-                    <input type="number" class="w-val" placeholder="0" oninput="runCalc()">
-                </div>
-            </div>
-            <button onclick="addRow()" style="width:100%; padding: 12px; background: none; border: 1px dashed var(--accent); color: var(--accent); border-radius: 10px; margin-bottom: 15px;">+ Собака</button>
-            <div style="text-align: center; border-top: 1px solid #333; padding-top: 15px;">
-                <div id="total-g" style="font-size: 28px; font-weight: bold; color: var(--accent);">0 г</div>
-                <div id="total-kg" style="font-size: 14px; opacity: 0.6;">(0.0 кг)</div>
-            </div>
-        </div>
-    </div>
-
-    <nav class="nav">
-        <div class="nav-item active" id="n-base" onclick="nav('base')">
-            <i class="fas fa-database"></i><span>База</span>
-        </div>
-        <div class="nav-item" id="n-calc" onclick="nav('calc')">
-            <i class="fas fa-calculator"></i><span>Корм</span>
-        </div>
-    </nav>
 </div>
 
 <div id="viewer">
-    <div class="header"><h1 id="v-title"></h1></div>
-    <div id="v-text" class="v-content"></div>
-</div>
-
-<div id="close-container" class="fixed-close-container">
-    <button class="btn-close-final" onclick="closeDoc()">
-        <i class="fas fa-check-circle"></i> ЗАКРЫТЬ
-    </button>
+    <h2 id="v-title" style="color:var(--dark); border-bottom: 2px solid var(--accent); padding-bottom:10px;"></h2>
+    <div id="v-body" style="font-size: 17px; line-height: 1.6; color: #333;">Загрузка...</div>
+    <button class="btn-close" onclick="closeDoc()">ЗАКРЫТЬ</button>
 </div>
 
 <script>
-    let tg = window.Telegram.WebApp;
-    tg.expand();
+    function showSub() { document.getElementById('p-main').classList.remove('active'); document.getElementById('p-sub').classList.add('active'); }
+    function showMain() { document.getElementById('p-sub').classList.remove('active'); document.getElementById('p-main').classList.add('active'); }
 
-    window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('splash-screen').style.opacity = '0';
-            document.getElementById('main-app').style.opacity = '1';
-            setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 600);
-        }, 2000);
-    };
-
-    function nav(tab) {
-        tg.HapticFeedback.impactOccurred('light');
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('p-' + tab).classList.add('active');
-        document.getElementById('n-' + tab).classList.add('active');
-        document.getElementById('p-submenu').classList.remove('active');
-    }
-
-    function toggleSubMenu(show) {
-        tg.HapticFeedback.impactOccurred('medium');
-        document.getElementById('p-base').classList.toggle('active', !show);
-        document.getElementById('p-submenu').classList.toggle('active', show);
-    }
-
-    function openDoc(title, text) {
-        tg.HapticFeedback.impactOccurred('medium');
+    // ФУНКЦИЯ ЗАГРУЗКИ ТЕКСТА ИЗ ФАЙЛА
+    async function loadContent(key, title) {
         document.getElementById('v-title').innerText = title;
-        document.getElementById('v-text').innerHTML = text;
+        document.getElementById('v-body').innerText = 'Загрузка данных...';
         document.getElementById('viewer').style.display = 'block';
-        document.getElementById('close-container').style.display = 'block';
+
+        try {
+            // Читаем наш файл data.json
+            const response = await fetch('data.json');
+            const data = await response.json();
+            
+            // Если такой ключ есть в файле — показываем текст
+            document.getElementById('v-body').innerHTML = data[key] || "Текст еще не добавлен.";
+        } catch (e) {
+            document.getElementById('v-body').innerText = "Ошибка загрузки файла data.json";
+        }
     }
 
-    function closeDoc() { 
-        tg.HapticFeedback.impactOccurred('light');
-        document.getElementById('viewer').style.display = 'none'; 
-        document.getElementById('close-container').style.display = 'none';
-    }
-
-    function addRow() {
-        const row = document.createElement('div');
-        row.style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;";
-        row.innerHTML = `<span>Вес собаки (кг):</span><input type="number" class="w-val" placeholder="0" oninput="runCalc()">`;
-        document.getElementById('dog-inputs').appendChild(row);
-    }
-
-    function runCalc() {
-        let total = 0;
-        document.querySelectorAll('.w-val').forEach(el => {
-            let v = parseFloat(el.value);
-            if (v > 0) {
-                if (v < 25) total += 400;
-                else if (v <= 45) total += 600;
-                else total += 1000;
-            }
-        });
-        document.getElementById('total-g').innerText = total + ' г';
-        document.getElementById('total-kg').innerText = '(' + (total/1000).toFixed(1) + ' кг)';
-    }
+    function closeDoc() { document.getElementById('viewer').style.display = 'none'; }
 </script>
+
 </body>
 </html>
