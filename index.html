@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Место сбора</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Прикольный градиентный фон */
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            text-align: center; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0; 
+            padding: 20px; 
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container { 
+            max-width: 700px; 
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95); /* Полупрозрачный белый */
+            padding: 40px 20px; 
+            border-radius: 30px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+            color: #333;
+        }
+        
+        /* Заголовок с жирным начертанием */
+        h1 { 
+            font-weight: 800;
+            font-size: 2.8rem; 
+            color: #2d3436; 
+            margin-top: 0;
+            margin-bottom: 10px; 
+            letter-spacing: -1px;
+        }
+        
+        /* Секция фото */
+        .photo-banner { 
+            width: 100%; 
+            height: 300px; 
+            background: #eee url('photo.jpg') no-repeat center/cover; 
+            border-radius: 20px; 
+            margin-bottom: 25px; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Таймер в современном стиле */
+        .timer-box { 
+            margin: 25px 0; 
+            padding: 20px; 
+            background: #f4f6f9; 
+            border-radius: 20px; 
+        }
+        #timer { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            color: #6c5ce7; /* Фиолетовый под цвет фона */
+            letter-spacing: 1px;
+        }
+        .timer-label { 
+            font-size: 0.9rem; 
+            color: #888; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        /* Современная кнопка музыки */
+        .music-control { margin: 20px 0; }
+        .music-btn { 
+            background: #2d3436;
+            color: white; 
+            border: none; 
+            padding: 14px 35px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: 600;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .music-btn:hover { 
+            background: #000; 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Карта */
+        .map-section { 
+            margin-top: 40px; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            border: 1px solid #ddd;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .map-title { 
+            margin-bottom: 15px; 
+            font-weight: 600; 
+            font-size: 1.1rem;
+        }
+        
+        /* Стилизация ссылок 2ГИС, чтобы не бросались в глаза */
+        .dg-widget-link { display: block; margin-bottom: 5px; font-size: 12px; text-decoration: none; color: #888; }
+        .dg-widget-link a { color: #6c5ce7; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Место сбора</h1>
+    
+    <div class="photo-banner">
+        </div>
+
+    <div class="music-control">
+        <button class="music-btn" onclick="toggleMusic()" id="mBtn">
+            <span>▶</span> Включить трек
+        </button>
+        <audio id="bg-music" loop>
+            <source src="music.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div class="timer-box">
+        <div class="timer-label">До встречи осталось</div>
+        <div id="timer">Загрузка...</div>
+    </div>
+
+    <div class="map-section">
+        <div class="map-title">📍 Локация на карте:</div>
+        <a class="dg-widget-link" href="http://2gis.ru/voronezh/firm/70000001025798067/center/39.10463333129883,51.644148937319805/zoom/16?utm_medium=widget-source&utm_campaign=firmsonmap&utm_source=bigMap">Посмотреть на карте Воронежа</a>
+        <div class="dg-widget-link"><a href="http://2gis.ru/voronezh/firm/70000001025798067/photos/70000001025798067/center/39.10463333129883,51.644148937319805/zoom/17?utm_medium=widget-source&utm_campaign=firmsonmap&utm_source=photos">Фотографии компании</a></div>
+        <div class="dg-widget-link"><a href="http://2gis.ru/voronezh/center/39.103457,51.637221/zoom/16/routeTab/rsType/bus/to/39.103457,51.637221╎Дизель Мастер, автотехцентр?utm_medium=widget-source&utm_campaign=firmsonmap&utm_source=route">Найти проезд до Дизель Мастер, автотехцентр</a></div>
+        
+        <script charset="utf-8" src="https://widgets.2gis.com/js/DGWidgetLoader.js"></script>
+        <script charset="utf-8">
+            // Я оставил ширину 100% для адаптивности, высоту сделал чуть меньше - 400
+            new DGWidgetLoader({"width":"100%","height":400,"borderColor":"#a3a3a3","pos":{"lat":51.644148937319805,"lon":39.10463333129883,"zoom":16},"opt":{"city":"voronezh"},"org":[{"id":"70000001025798067"}]});
+        </script>
+        <noscript style="color:#c00;font-size:16px;font-weight:bold;">Виджет карты использует JavaScript.</noscript>
+    </div>
+</div>
+
+<script>
+    // НАСТРОЙКА ТАЙМЕРА: Воскресенье, 22 Марта 2026, 20:00 (8 вечера)
+    // Месяцы в JS начинаются с 0 (январь - 0, март - 2)
+    const targetDate = new Date(2026, 2, 22, 20, 0, 0).getTime();
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff < 0) {
+            document.getElementById("timer").innerHTML = "Встреча началась!";
+            return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        // Добавляем нули для красоты (05д 02ч 09м)
+        const d = days < 10 ? '0' + days : days;
+        const h = hours < 10 ? '0' + hours : hours;
+        const m = mins < 10 ? '0' + mins : mins;
+        const s = secs < 10 ? '0' + secs : secs;
+
+        document.getElementById("timer").innerHTML = `${d}д ${h}ч ${m}м ${s}с`;
+    }
+    setInterval(updateTimer, 1000);
+    updateTimer(); // Запускаем сразу, чтобы не ждать секунду
+
+    // Музыкальный плеер
+    const audio = document.getElementById("bg-music");
+    const btn = document.getElementById("mBtn");
+
+    function toggleMusic() {
+        if (audio.paused) {
+            audio.play().catch(function(error) {
+                console.log("Автовоспроизведение заблокировано браузером. Требуется действие пользователя.");
+            });
+            btn.innerHTML = "<span>⏸</span> Пауза";
+            btn.style.background = "#e74c3c"; // Красная кнопка при воспроизведении
+        } else {
+            audio.pause();
+            btn.innerHTML = "<span>▶</span> Включить трек";
+            btn.style.background = "#2d3436"; // Возвращаем темный цвет
+        }
+    }
+</script>
+
+</body>
+</html>
